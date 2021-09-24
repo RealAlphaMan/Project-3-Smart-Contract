@@ -2,7 +2,11 @@ from uuid import uuid4
 
 import sys
 from blockchain import Blockchain
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template, redirect, url_for
+import pymysql
+
+# MySQL config
+conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='', db='project3')
 
 # Instantiate our Node
 app = Flask(__name__)
@@ -12,6 +16,81 @@ node_identifier = str(uuid4()).replace('-','')
 
 # Instantiate the Blockchain
 blockchain = Blockchain()
+
+@app.route('/login', methods = ['GET', 'POST'])
+def signIn():
+    error = None
+    global checkLogin
+    checkLogin = False
+    if request.method == 'POST':
+        global _usr
+        # Get username and password from client
+        _usr = request.form['usr']
+        _pwd = request.form['pwd']
+        try:
+            
+            cursor = conn.cursor()
+            query="SELECT password FROM user WHERE username = %s"
+            cursor.execute(query, _usr)
+            result = cursor.fetchone()
+
+            #Check if password is true
+            if result[0] == _pwd:
+                checkLogin = True
+
+                # Get hashid
+                query = "SELECT hashid FROM user WHERE username = %s"
+                cursor.execute(query, _usr)
+                result = cursor.fetchone()
+                return redirect(url_for('index', hashid = result[0]))
+            else:
+                error = "Invalid User or Password"  
+        except:
+            error = "Invalid User or Password" 
+    return render_template('LOGIN.html', error = error)
+
+@app.route('/register', methods = ['GET', 'POST'])
+def signUp():
+    error = None
+    global checkLogin
+    checkLogin = False
+    
+    if request.method == 'POST':
+        try:
+            cursor = conn.cursor()
+            
+            #Get data from client
+            _name = request.form['fullname']
+            _usr = request.form['usr']
+            _pwd = request.form['pwd']
+            _con_pwd = request.form['con-pwd']
+            if _name == '' or _usr == '' or _pwd == '' or _con_pwd == '':  #If not fill all input
+                error = 'Please fill in all input'
+            else:
+                if _pwd != _con_pwd:
+                    error = 'Password and Re-enter password are not equal'
+                else: 
+                    #Insert in to db
+                    query = 'INSERT INTO user (username, password, hashid, coin) VALUES (%s, %s, %s, 0)'
+                    cursor.execute(query, (_usr, _pwd, _usr))
+                    #Create data for userid
+
+                    checkLogin = True
+
+                    # Get userid
+                    query = "SELECT hashid FROM user WHERE username = %s"
+                    cursor.execute(query, _usr)
+                    result = cursor.fetchone()
+                    hashid = result[0]
+                    return redirect(url_for('index', hashid = hashid))
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    return render_template('REGISTER.html', error = error)
+
+@app.route('/<hashid>', methods = ['GET', 'POST'])
+def index(hashid):
+    return render_template('index.html')
 
 @app.route('/mine', methods=['GET'])
 def mine():
