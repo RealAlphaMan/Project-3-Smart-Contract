@@ -1,31 +1,117 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title>HOME PAGE</title>
-	<link rel="stylesheet" type="text/css" href="../static/index.css">
+	<title>Homepage</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="{{ url_for('static', filename= 'style.css') }}">
+	<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/e43787928d.js" crossorigin="anonymous"></script>
 </head>
-<body>
-	<header>
-		<div class="main">
-		<div class="logo">
-			<img src="../static/soict.png">
-		</div>
-			<ul>
-				<li class="active"><a href="/">Home</a></li>
-				<li><a href="#">Services</a></li>
-				<li><a href="/login">Login</a></li>
-				<li><a href="/register">Register</a></li>
-				<li><a href="#">About</a></li>
-			</ul>
-		</div>
-		<div class="title">
-			<h1>HUMAN HEALTH</h1>
-		</div>
-		
-		<div class="button">
-		<a href="/register" class="btn">GET STARTED</a>
-		<a href="#" class="btn">LEARN MORE</a>
-		
-		</div>
-	</header>
+<body class="bg-gray-200">
 
-</body>
+	<div class="w-full flex p-4 bg-gray-300 justify-between">
+	  <img src="../static/soict.png" width = 30%/>
+	  <h2 class="heading text-2xl">Blockchain</h2>
+	</div>
+	<div class="pt-6">
+	  <div class="tools">
+		<button
+		  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" data-toggle="modal" data-target="#exampleModalCenter"
+		  id="mine">
+		  <i class="fas fa-sign-in-alt"></i>
+		  Mine
+		</button> 
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Notification</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				</div>
+				<div class="modal-body">
+				You mined 1 coin
+				</div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="history.go(0);">Close</button>
+				</div>
+			</div>
+			</div>
+		</div>
+		<button onclick="location.href='/chain'"
+		  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+		  id="chain">
+		  <i class="fas fa-sign-in-alt"></i>
+		  Chain
+		</button>
+		<button type="button" id="transparent" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+		  Transaction
+		</button>
+	  </div>
+	  <div class="mt-8">
+		<div class="flex justify-around">
+	   <div id="js-view-server" class="justify-center">
+		  <span class="text-2xl">Hash ID: </span> <span id="usr" class=" text-2xl font-bold">{{hashid}}<span>
+		  </span>
+		</div>
+	  </div>
+	  <div class="mt-8">
+		<div class="flex justify-around">
+	   <div id="js-view-server" class="justify-center">
+		  <span class="text-2xl">Coin: </span> <span id="usr" class=" text-2xl font-bold">{{coin}}<span>
+		  </span>
+		</div>
+	  </div>
+	  <div class="modal" id="exampleModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title">Create New Transaction</h5>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body mx-3">
+				<div class="md-form mb-5">
+					<i class="fas fa-user prefix grey-text"></i>
+					<label for="recipient">Recipient</label>
+					<input type="text" id="recipient" class="form-control">
+				  </div>
+		  
+				  <div class="md-form mb-5">
+					<i class="fas fa-envelope prefix grey-text"></i>
+					<label for="amount">Amount</label>
+					<input type="email" id="amount" class="form-control">
+				  </div>
+		  
+				  <div class="md-form">
+					<i class="fas fa-tag prefix grey-text"></i>
+					<label for="content">Content</label>
+					<textarea type="text" id="content" class="md-textarea form-control" rows="4"></textarea>
+				  </div>
+			</div>
+			<div class="modal-footer">
+				<script>
+					function newTransaction() {
+  						alert("Your transaction has created");
+					}
+				</script>
+			  <button type="button" class="btn btn-primary" id="add" onclick="newTransaction()">Add</button>
+			  <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="history.go(0);">Close</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+	<script type="text/javascript">
+		var hashid = '{{hashid}}';
+	</script>
+	<script src="{{url_for('static', filename='main.js')}}"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
