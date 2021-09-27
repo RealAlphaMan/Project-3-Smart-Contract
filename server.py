@@ -178,6 +178,9 @@ def new_transaction():
     if int(real_amount) < int(jsonvalues['amount']):
         return 'Your coin is not enough', 400
 
+    if int(jsonvalues['amount']) < 0:
+        return 'Coin must >= 0', 400
+
     # Update coin data
     real_amount -= int(jsonvalues['amount'])
     query = 'SELECT coin FROM user WHERE hashid = %s'
